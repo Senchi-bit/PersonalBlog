@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="PersonalBlog.API/PersonalBlog.API.csproj" />
+  <Project Path="PersonalBlog.Application/PersonalBlog.Application.csproj" />
+  <Project Path="PersonalBlog.Domain/PersonalBlog.Domain.csproj" />
+  <Project Path="PersonalBlog.Infrastructure/PersonalBlog.Infrastructure.csproj" />
+  <Project Path="SharedKernel/SharedKernel.csproj" />
+</Solution>

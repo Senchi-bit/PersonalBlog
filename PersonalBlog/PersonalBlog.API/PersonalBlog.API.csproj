@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>PersonalBlog</RootNamespace>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PersonalBlog.Application\PersonalBlog.Application.csproj" />
+      <ProjectReference Include="..\PersonalBlog.Domain\PersonalBlog.Domain.csproj" />
+      <ProjectReference Include="..\PersonalBlog.Infrastructure\PersonalBlog.Infrastructure.csproj" />
+      <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>
