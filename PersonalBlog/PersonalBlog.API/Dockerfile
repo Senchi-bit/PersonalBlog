@@ -1,27 +1,12 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-ARG BUILD_CONFIGURATION=Release
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["PersonalBlog.API/PersonalBlog.API.csproj", "PersonalBlog.API/"]
-COPY ["PersonalBlog.Application/PersonalBlog.Application.csproj", "PersonalBlog.Application/"]
-COPY ["PersonalBlog.Domain/PersonalBlog.Domain.csproj", "PersonalBlog.Domain/"]
-COPY ["SharedKernel/SharedKernel.csproj", "SharedKernel/"]
-COPY ["PersonalBlog.Infrastructure/PersonalBlog.Infrastructure.csproj", "PersonalBlog.Infrastructure/"]
-RUN dotnet restore "PersonalBlog.API/PersonalBlog.API.csproj"
 COPY . .
-WORKDIR "/src/PersonalBlog.API"
-RUN dotnet build "./PersonalBlog.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet publish PersonalBlog.API/PersonalBlog.API.csproj -c Release -o /app/publish
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./PersonalBlog.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "PersonalBlog.API.dll"]
