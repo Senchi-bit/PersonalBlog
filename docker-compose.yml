@@ -1,0 +1,40 @@
+services:
+  web:
+    build: ./personblogfrontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./PersonalBlog
+      dockerfile: PersonalBlog.API/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      MongoDatabase__ConnectionString: mongodb://blog:${MONGO_PASSWORD}@mongo:27017/PersonalBlog?authSource=admin
+      MongoDatabase__DatabaseName: PersonalBlog
+      MongoDatabase__ArticlesCollectionName: Articles
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: blog
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "-u", "blog", "-p", "${MONGO_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
